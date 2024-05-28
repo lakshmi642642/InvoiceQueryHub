@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Extractor</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .result-container {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <h3 class="card-title text-center">Upload an Invoice and Ask a Question</h3>
+                    <form action="/extract" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="file" class="d-block text-center">Choose an image file:</label>
+                            <input type="file" id="file" name="file" class="form-control-file mx-auto d-block" accept="image/*" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="question" class="d-block text-center">Question:</label>
+                            <select id="question" name="question" class="form-control mx-auto d-block" style="width: 50%;" required>
+                                <option value="What is the invoice number?">What is the invoice number?</option>
+                                <option value="What is the Total Amount?">What is the Total Amount?</option>
+                                <option value="What is the date of the invoice?">What is the date of the invoice?</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Upload and Extract</button>
+                    </form>
+                    <div id="result" class="result-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const response = await fetch('/extract', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+        });
+    </script>
+</body>
+</html>
